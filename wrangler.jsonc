@@ -1,5 +1,5 @@
 {
-  // 与 CI 项目名对齐，去除 “-container” 避免名称覆盖告警
+  // 与连接构建项目保持一致，避免名称覆盖告警
   "name": "php-nginx",
 
   "main": "index.ts",
@@ -8,14 +8,14 @@
   "minify": true,
   "observability": { "enabled": true },
 
-  // 与 CI 环境保持一致：APP_CONTAINER / AppContainer
+  // CI 环境提供的绑定：APP_CONTAINER -> AppContainer
   "durable_objects": {
     "bindings": [
       { "name": "APP_CONTAINER", "class_name": "AppContainer" }
     ]
   },
 
-  // 关键：为 AppContainer 增加 Durable Object 迁移（容器类建议使用 new_sqlite_classes）
+  // 新增迁移：声明 AppContainer 为 Durable Object（SQLite 后端）
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["AppContainer"] }
   ],
@@ -24,10 +24,17 @@
 
   "containers": [
     {
-      // 与上面的 Durable Object class 对齐
       "class_name": "AppContainer",
-      // 继续沿用当前镜像来源
-      "image": "./Dockerfile"
+      "image": "./Dockerfile",
+      // 对外监听端口（Nginx）
+      "port": 80,
+      // 以“验证配置 -> 启动 php-fpm -> 前台运行 nginx”的顺序启动
+      "command": [
+        "sh", "-lc",
+        "php-fpm -tt || exit 1; nginx -t || exit 1; " +
+        "(php-fpm -D || php-fpm8.3 -D || php-fpm8.2 -D); " +
+        "exec nginx -g 'daemon off;'"
+      ]
     }
   ]
 }
