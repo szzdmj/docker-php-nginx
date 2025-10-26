@@ -37,7 +37,7 @@ COPY config/nginx.conf /etc/nginx/nginx.conf
 COPY config/conf.d /etc/nginx/conf.d/
 
 # Configure PHP-FPM
-ENV PHP_INI_DIR /etc/php84
+ENV PHP_INI_DIR=/etc/php84
 # Master config (global) to stdout/stderr and writable pid path
 COPY config/php-fpm.conf ${PHP_INI_DIR}/php-fpm.conf
 COPY config/fpm-pool.conf ${PHP_INI_DIR}/php-fpm.d/www.conf
