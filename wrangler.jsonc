@@ -1,6 +1,6 @@
 {
   "name": "php-nginx-container",
-  "main": "src/index.ts",
+  "main": "index.ts",
   "compatibility_date": "2025-10-26",
   "compatibility_flags": ["nodejs_compat"],
   "minify": true,
