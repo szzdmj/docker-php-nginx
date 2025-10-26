@@ -38,20 +38,23 @@ COPY config/conf.d /etc/nginx/conf.d/
 
 # Configure PHP-FPM
 ENV PHP_INI_DIR /etc/php84
+# Master config (global) to stdout/stderr and writable pid path
+COPY config/php-fpm.conf ${PHP_INI_DIR}/php-fpm.conf
 COPY config/fpm-pool.conf ${PHP_INI_DIR}/php-fpm.d/www.conf
 COPY config/php.ini ${PHP_INI_DIR}/conf.d/custom.ini
 
 # Configure supervisord
 COPY config/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
-# Make sure files/folders needed by the processes are accessable when they run under the nobody user
-RUN chown -R nobody:nobody /var/www/html /run /var/lib/nginx /var/log/nginx
+# Make sure files/folders needed by the processes are accessible when they run under the nobody user
+RUN mkdir -p /run/php-fpm84 /var/log/php84 \
+ && chown -R nobody:nobody /var/www/html /run /run/php-fpm84 /var/lib/nginx /var/log/nginx /var/log/php84
 
 # Switch to use a non-root user from here on
 USER nobody
 
 # Add application
-COPY  src/ /var/www/html/
+COPY --chown=nobody src/ /var/www/html/
 
 # Expose the port nginx is reachable on
 EXPOSE 8080
