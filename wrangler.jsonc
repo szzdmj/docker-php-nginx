@@ -1,6 +1,6 @@
 {
   "name": "php-nginx-container",
-  "main": "index.ts",
+  "main": "src/index.ts",
   "compatibility_date": "2025-10-26",
   "compatibility_flags": ["nodejs_compat"],
   "minify": true,
@@ -11,11 +11,6 @@
       { "name": "APP_CONTAINER", "class_name": "AppContainer" }
     ]
   },
-
-  "migrations": [
-    { "tag": "v1", "new_classes": ["MyContainer"] },
-    { "tag": "v2", "deleted_classes": ["MyContainer"], "new_sqlite_classes": ["MyContainerSql"] }
-  ],
 
   "placement": { "mode": "smart" },
 
