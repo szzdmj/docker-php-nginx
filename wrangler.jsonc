@@ -1,22 +1,32 @@
 {
-  "name": "php-nginx-container",
+  // 与 CI 项目名对齐，去除 “-container” 避免名称覆盖告警
+  "name": "php-nginx",
+
   "main": "index.ts",
   "compatibility_date": "2025-10-26",
   "compatibility_flags": ["nodejs_compat"],
   "minify": true,
   "observability": { "enabled": true },
 
+  // 与 CI 环境保持一致：APP_CONTAINER / AppContainer
   "durable_objects": {
     "bindings": [
       { "name": "APP_CONTAINER", "class_name": "AppContainer" }
     ]
   },
 
+  // 关键：为 AppContainer 增加 Durable Object 迁移（容器类建议使用 new_sqlite_classes）
+  "migrations": [
+    { "tag": "v1", "new_sqlite_classes": ["AppContainer"] }
+  ],
+
   "placement": { "mode": "smart" },
 
   "containers": [
     {
+      // 与上面的 Durable Object class 对齐
       "class_name": "AppContainer",
+      // 继续沿用当前镜像来源
       "image": "./Dockerfile"
     }
   ]
