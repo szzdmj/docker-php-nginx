@@ -1,0 +1,19 @@
+{
+  // Configuration for deploying the built trafex/php-nginx image as a Cloudflare Container
+  // NOTE: the GitHub Actions workflow pushes two tags: "latest" and a release tag.
+  // Replace the image tag below with a specific release tag or commit SHA for reproducible deployments.
+  "name": "php-nginx-container",
+  "compatibility_date": "2025-10-26",
+  "compatibility_flags": ["nodejs_compat"],
+  "minify": true,
+  "observability": { "enabled": true },
+
+  // Use the image produced by your workflow. For reproducible deployments replace :latest
+  // with the release tag (e.g. trafex/php-nginx:v1.2.3) or the commit SHA.
+  "containers": [
+    {
+      "class_name": "AppContainer",
+      "image": "docker.io/trafex/php-nginx:latest"
+    }
+  ]
+}
