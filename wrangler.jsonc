@@ -1,5 +1,5 @@
 {
-  // 与连接构建项目保持一致，避免名称覆盖告警
+  // 与连接构建项目保持一致
   "name": "php-nginx",
 
   "main": "index.ts",
@@ -15,7 +15,7 @@
     ]
   },
 
-  // 新增迁移：声明 AppContainer 为 Durable Object（SQLite 后端）
+  // 声明 AppContainer 为 Durable Object（SQLite 后端）
   "migrations": [
     { "tag": "v1", "new_sqlite_classes": ["AppContainer"] }
   ],
@@ -26,14 +26,12 @@
     {
       "class_name": "AppContainer",
       "image": "./Dockerfile",
-      // 对外监听端口（Nginx）
       "port": 80,
-      // 以“验证配置 -> 启动 php-fpm -> 前台运行 nginx”的顺序启动
+      // 注意：这里是一条完整字符串，不能使用 '+' 拼接
       "command": [
-        "sh", "-lc",
-        "php-fpm -tt || exit 1; nginx -t || exit 1; " +
-        "(php-fpm -D || php-fpm8.3 -D || php-fpm8.2 -D); " +
-        "exec nginx -g 'daemon off;'"
+        "sh",
+        "-lc",
+        "php-fpm -tt || exit 1; nginx -t || exit 1; (php-fpm -D || php-fpm8.3 -D || php-fpm8.2 -D); exec nginx -g 'daemon off;'"
       ]
     }
   ]
