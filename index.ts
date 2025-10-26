@@ -6,7 +6,7 @@ import { Container, getContainer } from "@cloudflare/containers";
  */
 export class AppContainer extends Container {
   // Default port the container serves on (inside the container)
-  defaultPort = 80;
+  defaultPort = 8080;
 
   // How long the instance may sleep after idling
   sleepAfter = "5m";
