@@ -12,12 +12,17 @@
     ]
   },
 
+  "migrations": [
+    { "tag": "v1", "new_classes": ["MyContainer"] },
+    { "tag": "v2", "deleted_classes": ["MyContainer"], "new_sqlite_classes": ["MyContainerSql"] }
+  ],
+
   "placement": { "mode": "smart" },
 
   "containers": [
     {
       "class_name": "AppContainer",
-      "image": ".Dockerfile"
+      "image": "./Dockerfile"
     }
   ]
 }
