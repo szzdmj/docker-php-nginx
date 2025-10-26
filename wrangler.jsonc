@@ -17,7 +17,7 @@
   "containers": [
     {
       "class_name": "AppContainer",
-      "image": "docker.io/trafex/php-nginx:latest"
+      "image": ".Dockerfile"
     }
   ]
 }
