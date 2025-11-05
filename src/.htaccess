@@ -1,0 +1,44 @@
+# 如果是把网站安装在了子目录里，需要把下边的路径为 / 的修改为实际路径
+# 比如安装在了 /new 目录里，那么下边的 /, /index.php, /temp/, /images/, /404.htm 都需要在其前边添加 /new
+
+RewriteBase /
+RewriteEngine On
+# Options FollowSymLinks
+Options SymLinksIfOwnerMatch
+Options -Indexes
+
+# 返回空页面（为部分被禁的网址返回空白内容）
+RewriteRule ^/*blank/ /index.php?__nonematch__=1 [L]
+RewriteRule ^favicon\.ico /index.php?__nonematch__=1 [L]
+
+# 不经过PHP，直接输出robots.txt
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^robots.txt - [L]
+
+# 直接访问资源缓存文件
+RewriteCond %{QUERY_STRING} ^$
+RewriteRule ^files/(\w)(\w\w)(\w{13})-\w-[\w\-]+(\.\w{2,4})$ /temp/$1/$2/$1$2$3$4 [PT]
+RewriteRule ^files/\w/\w{10}(\w)(\w\w)(\w{13})\w{6}/[\w/]+(\.\w{2,4})$ /temp/$1/$2/$1$2$3$4 [PT]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule ^temp/\w/\w\w/\w{16}\.\w{2,4}$ - [L]
+# RewriteRule ^temp/\w/\w\w/\w{16}\.\w{2,4}$ /index.php?__nonematch__=1 [L]
+
+# tui
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteRule ^\w{3,4}/(.*)$ /tui/$1 [L]
+
+# 传递参数给PHP
+RewriteRule . - [E=HTTP_X_USING_HTACCESS:1,E=HTTP_IF_NONE_MATCH:%{HTTP:If-None-Match},E=HTTP_IF_MATCH:%{HTTP:If-Match},E=HTTP_IF_MODIFIED_SINCE:%{HTTP:If-Modified-Since}]
+
+# 定位到统一入口
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.php?__nonematch__=1 [L]
+
+# 禁止访问的目录或文件(如果不支持[L,R=404]就可以改为[F]试试)
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^(data|include|temp|plugin)/ /404.htm [L,R=404]
+RewriteCond %{REQUEST_FILENAME} -f
+RewriteRule \.(db|htaccess|~\w+|bak|inc|sh|yaml|ini|bat|dat|txt|lock|conf|inc.php)$ /404.htm [L,R=404]
+RewriteRule ^images/enc\.js /404.htm [L,R=404]
